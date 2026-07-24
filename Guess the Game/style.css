@@ -1,0 +1,71 @@
+body{
+    margin:0;
+    padding:0;
+    font-family:Arial, sans-serif;
+    background:#212121;
+    color:white;
+}
+
+.wrapper{
+    width:450px;
+    margin:50px auto;
+    padding:30px;
+    text-align:center;
+    background:#333;
+    border-radius:10px;
+}
+
+h1{
+    color:#ffd700;
+}
+
+p{
+    font-size:18px;
+}
+
+#guessField{
+    width:220px;
+    padding:10px;
+    font-size:18px;
+    text-align:center;
+}
+
+#subt{
+    margin-top:15px;
+    padding:10px 20px;
+    font-size:18px;
+    background:#ff5722;
+    color:white;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+#subt:hover{
+    background:#e64a19;
+}
+
+.guesses,
+.lastResult{
+    font-weight:bold;
+    color:yellow;
+}
+
+.lowOrHi{
+    margin-top:20px;
+    font-size:20px;
+    color:#00ff99;
+}
+
+.button{
+    margin-top:20px;
+}
+
+#newGame{
+    display:inline-block;
+    background:#00bcd4;
+    color:white;
+    padding:10px 20px;
+    border-radius:5px;
+    cursor:pointer;
+}
