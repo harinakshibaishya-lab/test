@@ -1,0 +1,449 @@
+/* ==========================================================================
+   ATMOS — Design tokens
+   Palette: deep night indigo base, storm-slate glass, dawn-gold + aurora-teal
+   accents that shift with real conditions (handled partly by JS variables).
+   Display type: Space Grotesk (headlines) · Body: Inter · Data: IBM Plex Mono
+   ========================================================================== */
+
+:root{
+  --night:        #0b1120;
+  --slate:        #141c2e;
+  --glass:        rgba(226, 232, 240, 0.06);
+  --glass-strong: rgba(226, 232, 240, 0.10);
+  --border:       rgba(226, 232, 240, 0.12);
+  --text-hi:      #f1f5f9;
+  --text-mid:     #b9c2d0;
+  --text-low:     #7a8496;
+
+  --gold:   #f0b429;   /* sun / clear */
+  --teal:   #2dd4bf;   /* accent, links, active states */
+  --rain:   #38bdf8;   /* rain / cool */
+  --violet: #a78bfa;   /* storm */
+
+  --radius: 18px;
+  --radius-sm: 12px;
+
+  --ease: cubic-bezier(.22,.61,.36,1);
+}
+
+*{ box-sizing: border-box; }
+
+html, body{
+  margin:0;
+  min-height: 100vh;
+  background: var(--night);
+  color: var(--text-hi);
+  font-family: 'Inter', system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+.mono{ font-family: 'IBM Plex Mono', monospace; letter-spacing: .02em; }
+
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration: .001ms !important; transition-duration: .001ms !important; }
+}
+
+/* ---------------------------------------------------------------------- */
+/* LIVING SKY canvas — sits fixed behind everything, painted by script.js */
+/* ---------------------------------------------------------------------- */
+#sky{
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  background: linear-gradient(180deg, var(--night), #0a0e1a);
+}
+
+#vignette{
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 90% at 50% -10%, transparent 40%, rgba(11,17,32,.55) 100%),
+    linear-gradient(180deg, transparent 0%, rgba(11,17,32,.85) 92%);
+}
+
+.app{
+  position: relative;
+  z-index: 2;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 28px 24px 60px;
+}
+
+/* ---------------------------------------------------------------------- */
+/* TOP BAR                                                                 */
+/* ---------------------------------------------------------------------- */
+.topbar{
+  display:flex;
+  align-items:center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.brand{ display:flex; flex-direction:column; margin-right:auto; }
+.brand-mark{
+  font-family:'Space Grotesk', sans-serif;
+  font-weight:700;
+  font-size: 1.4rem;
+  letter-spacing: .08em;
+}
+.brand-sub{ font-size:.72rem; color:var(--text-low); letter-spacing:.05em; }
+
+.search{
+  display:flex;
+  background: var(--glass);
+  border:1px solid var(--border);
+  border-radius: 999px;
+  overflow:hidden;
+  flex: 1 1 220px;
+  max-width: 320px;
+}
+.search input{
+  flex:1;
+  background:transparent;
+  border:none;
+  outline:none;
+  padding: 10px 16px;
+  color: var(--text-hi);
+  font-family:'Inter',sans-serif;
+  font-size:.9rem;
+}
+.search input::placeholder{ color: var(--text-low); }
+.search button{
+  border:none;
+  background:transparent;
+  color: var(--teal);
+  font-size:1.1rem;
+  padding: 0 16px;
+  cursor:pointer;
+  transition: transform .2s var(--ease);
+}
+.search button:hover{ transform: translateX(2px); }
+
+.top-actions{ display:flex; align-items:center; gap:10px; }
+
+.ghost-btn{
+  background: var(--glass);
+  border:1px solid var(--border);
+  color: var(--text-mid);
+  padding: 9px 14px;
+  border-radius: 999px;
+  font-size:.8rem;
+  cursor:pointer;
+  transition: all .2s var(--ease);
+}
+.ghost-btn:hover{ color:var(--teal); border-color: var(--teal); }
+
+.unit-toggle{
+  display:flex;
+  background: var(--glass);
+  border:1px solid var(--border);
+  border-radius: 999px;
+  overflow:hidden;
+}
+.unit-toggle button{
+  border:none;
+  background:transparent;
+  color:var(--text-low);
+  padding: 9px 14px;
+  font-size:.8rem;
+  font-family:'IBM Plex Mono', monospace;
+  cursor:pointer;
+  transition: all .2s var(--ease);
+}
+.unit-toggle button.active{
+  background: var(--teal);
+  color: var(--night);
+  font-weight:600;
+}
+
+button:focus-visible, input:focus-visible{
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+}
+
+/* recent search chips */
+.recent-chips{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:14px;
+}
+.recent-chips button{
+  background: var(--glass);
+  border:1px solid var(--border);
+  color: var(--text-mid);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size:.75rem;
+  cursor:pointer;
+}
+.recent-chips button:hover{ color: var(--teal); border-color: var(--teal); }
+
+/* ---------------------------------------------------------------------- */
+/* STATUS (loading / error)                                                */
+/* ---------------------------------------------------------------------- */
+.status-panel{
+  margin-top: 80px;
+  text-align:center;
+  color: var(--text-mid);
+  font-family:'IBM Plex Mono', monospace;
+  letter-spacing:.05em;
+  animation: pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse{ 0%,100%{opacity:.5;} 50%{opacity:1;} }
+
+/* ---------------------------------------------------------------------- */
+/* HERO                                                                    */
+/* ---------------------------------------------------------------------- */
+.hero{
+  margin-top: 36px;
+  display:flex;
+  justify-content:space-between;
+  gap: 28px;
+  flex-wrap: wrap;
+  animation: rise .6s var(--ease) both;
+}
+
+@keyframes rise{
+  from{ opacity:0; transform: translateY(14px); }
+  to{ opacity:1; transform: translateY(0); }
+}
+
+.place-line{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+.place-line h1{
+  font-family:'Space Grotesk', sans-serif;
+  font-size: 1.7rem;
+  font-weight:600;
+  margin:0;
+}
+.coords{ color: var(--text-low); font-size:.78rem; }
+
+.temp-row{ display:flex; align-items:flex-start; margin-top: 6px; }
+.temp{
+  font-family:'Space Grotesk', sans-serif;
+  font-size: 6.4rem;
+  line-height: .9;
+  font-weight: 700;
+  letter-spacing: -.03em;
+  background: linear-gradient(180deg, var(--text-hi), var(--text-mid));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.temp-unit{
+  font-family:'Space Grotesk', sans-serif;
+  font-size: 1.8rem;
+  color: var(--text-low);
+  margin-top: 14px;
+}
+
+.condition{
+  font-size: 1.05rem;
+  color: var(--text-mid);
+  margin: 2px 0 10px;
+  text-transform: capitalize;
+}
+.feels{ color: var(--text-low); font-size:.78rem; margin:0 0 12px; }
+
+.hilo{ display:flex; gap:16px; font-size:.85rem; color: var(--text-mid); }
+.hilo span span{ color: var(--text-hi); }
+
+.hero-right{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  justify-content:flex-start;
+  min-width: 220px;
+}
+
+.sun-arc{ width:100%; text-align:right; }
+.arc-track{
+  position:relative;
+  height: 60px;
+  border-top: 1px dashed var(--border);
+  border-radius: 999px 999px 0 0;
+  margin-top: 20px;
+}
+.sun-dot{
+  position:absolute;
+  top:-6px; left: 30%;
+  width:11px; height:11px;
+  border-radius:50%;
+  background: var(--gold);
+  box-shadow: 0 0 12px 2px var(--gold);
+  transition: left 1s var(--ease);
+}
+.arc-labels{
+  display:flex;
+  justify-content:space-between;
+  gap: 8px;
+  font-size:.72rem;
+  color: var(--text-low);
+  margin-top: 6px;
+}
+.arc-tag{ color: var(--text-low); opacity:.7; }
+.updated{ font-size:.68rem; color: var(--text-low); margin-top: 20px; }
+
+/* ---------------------------------------------------------------------- */
+/* INSTRUMENT GRID                                                         */
+/* ---------------------------------------------------------------------- */
+.instruments{
+  margin-top: 34px;
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.gauge{
+  background: var(--glass);
+  border:1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  backdrop-filter: blur(14px);
+  display:flex;
+  flex-direction:column;
+  gap: 8px;
+  animation: rise .6s var(--ease) both;
+}
+.gauge:hover{ background: var(--glass-strong); }
+
+.gauge-label{ font-size:.72rem; color: var(--text-low); letter-spacing:.04em; text-transform:uppercase; }
+.gauge-value{ font-size: 1.25rem; font-weight:500; }
+.gauge-tag{ font-size:.72rem; color: var(--teal); }
+
+.gauge-bar{
+  height: 5px;
+  border-radius: 4px;
+  background: rgba(255,255,255,.08);
+  overflow:hidden;
+}
+.gauge-bar i{
+  display:block;
+  height:100%;
+  width:0%;
+  background: linear-gradient(90deg, var(--teal), var(--rain));
+  border-radius: 4px;
+  transition: width 1s var(--ease);
+}
+
+.wind-compass{
+  position:relative;
+  width: 30px; height: 30px;
+  border:1px solid var(--border);
+  border-radius:50%;
+  align-self:flex-start;
+}
+.wind-compass i{
+  position:absolute;
+  top:50%; left:50%;
+  width: 2px; height: 12px;
+  background: var(--teal);
+  transform-origin: bottom center;
+  transform: translate(-50%,-100%) rotate(0deg);
+  transition: transform 1s var(--ease);
+}
+
+/* ---------------------------------------------------------------------- */
+/* HOURLY STRIP                                                            */
+/* ---------------------------------------------------------------------- */
+.section-title{
+  font-family:'Space Grotesk', sans-serif;
+  font-size: .95rem;
+  font-weight:600;
+  color: var(--text-mid);
+  text-transform: uppercase;
+  letter-spacing:.08em;
+  margin: 38px 0 14px;
+}
+
+.hourly-strip{
+  display:flex;
+  gap: 10px;
+  overflow-x:auto;
+  padding-bottom: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.hourly-strip::-webkit-scrollbar{ height:5px; }
+.hourly-strip::-webkit-scrollbar-thumb{ background: var(--border); border-radius:4px; }
+
+.hour-card{
+  flex: 0 0 auto;
+  min-width: 76px;
+  background: var(--glass);
+  border:1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 10px;
+  text-align:center;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap: 6px;
+}
+.hour-card .h-time{ font-size:.7rem; color: var(--text-low); font-family:'IBM Plex Mono', monospace; }
+.hour-card .h-icon{ font-size:1.3rem; }
+.hour-card .h-temp{ font-size:.9rem; font-weight:600; }
+.hour-card .h-rain{ font-size:.65rem; color: var(--rain); }
+
+/* ---------------------------------------------------------------------- */
+/* DAILY LIST                                                              */
+/* ---------------------------------------------------------------------- */
+.daily-list{ display:flex; flex-direction:column; gap:6px; }
+
+.day-row{
+  display:grid;
+  grid-template-columns: 90px 28px 1fr 90px;
+  align-items:center;
+  gap: 14px;
+  background: var(--glass);
+  border:1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+}
+.day-name{ font-size:.85rem; color: var(--text-mid); }
+.day-icon{ font-size: 1.2rem; text-align:center; }
+
+.day-bar-track{
+  position:relative;
+  height: 4px;
+  border-radius: 4px;
+  background: rgba(255,255,255,.08);
+}
+.day-bar-fill{
+  position:absolute;
+  height:100%;
+  border-radius:4px;
+  background: linear-gradient(90deg, var(--rain), var(--gold));
+}
+.day-range{
+  font-size:.8rem;
+  color: var(--text-hi);
+  text-align:right;
+  font-family:'IBM Plex Mono', monospace;
+}
+.day-range span{ color: var(--text-low); }
+
+/* ---------------------------------------------------------------------- */
+.foot{
+  margin-top: 50px;
+  text-align:center;
+  font-size:.7rem;
+  color: var(--text-low);
+  letter-spacing:.05em;
+}
+
+/* ---------------------------------------------------------------------- */
+/* RESPONSIVE                                                              */
+/* ---------------------------------------------------------------------- */
+@media (max-width: 640px){
+  .temp{ font-size: 4.6rem; }
+  .instruments{ grid-template-columns: repeat(2, 1fr); }
+  .hero{ flex-direction:column; }
+  .hero-right{ align-items:flex-start; width:100%; }
+  .arc-track{ width:100%; }
+  .day-row{ grid-template-columns: 70px 22px 1fr 76px; padding:10px 12px; gap:10px; }
+}

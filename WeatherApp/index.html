@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ATMOS — Live Sky Weather</title>
+
+<!-- Fonts: Space Grotesk for display headlines, Inter for body text,
+     IBM Plex Mono for the "instrument panel" numeric readouts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ======================================================
+       LIVING SKY — full-bleed canvas that renders real-time
+       weather as motion (sun rays, drifting clouds, falling
+       rain, snow, stars, lightning) instead of a static icon.
+       Driven entirely by script.js based on the fetched data.
+       ====================================================== -->
+  <canvas id="sky"></canvas>
+  <div id="vignette"></div>
+
+  <div class="app">
+
+    <!-- ============ HEADER: search + unit toggle ============ -->
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">ATMOS</span>
+        <span class="brand-sub">live sky instrument</span>
+      </div>
+
+      <form id="searchForm" class="search" autocomplete="off">
+        <input id="searchInput" type="text" placeholder="Search a city…" aria-label="Search for a city">
+        <button type="submit" aria-label="Search">→</button>
+      </form>
+
+      <div class="top-actions">
+        <button id="locateBtn" class="ghost-btn" title="Use my location">◎ Locate</button>
+        <div class="unit-toggle" id="unitToggle" role="group" aria-label="Temperature unit">
+          <button data-unit="C" class="active">°C</button>
+          <button data-unit="F">°F</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- recent-search chips (session memory, no storage) -->
+    <div id="recentChips" class="recent-chips" hidden></div>
+
+    <!-- ============ STATUS: loading / error states ============ -->
+    <div id="statusPanel" class="status-panel" hidden>
+      <div id="statusText">Reading the sky…</div>
+    </div>
+
+    <!-- ============ HERO: big reading + condition ============ -->
+    <main id="mainContent" hidden>
+
+      <section class="hero">
+        <div class="hero-left">
+          <div class="place-line">
+            <h1 id="placeName">—</h1>
+            <span id="placeCoords" class="mono coords">— , —</span>
+          </div>
+
+          <div class="temp-row">
+            <span id="temperature" class="temp">--</span>
+            <span class="temp-unit" id="tempUnitLabel">°C</span>
+          </div>
+
+          <p id="condition" class="condition">—</p>
+          <p id="feelsLike" class="feels mono">FEELS LIKE —</p>
+
+          <div class="hilo mono">
+            <span>↑ <span id="tempMax">--</span></span>
+            <span>↓ <span id="tempMin">--</span></span>
+          </div>
+        </div>
+
+        <div class="hero-right">
+          <div class="sun-arc">
+            <div class="arc-track">
+              <div id="sunDot" class="sun-dot"></div>
+            </div>
+            <div class="arc-labels mono">
+              <span id="sunrise">--:--</span>
+              <span class="arc-tag">sunrise / sunset</span>
+              <span id="sunset">--:--</span>
+            </div>
+          </div>
+          <div class="updated mono" id="lastUpdated">last read —</div>
+        </div>
+      </section>
+
+      <!-- ============ INSTRUMENT GRID ============ -->
+      <section class="instruments" aria-label="Current conditions detail">
+        <div class="gauge" data-key="humidity">
+          <span class="gauge-label">Humidity</span>
+          <span class="gauge-value mono"><span id="humidity">--</span>%</span>
+          <div class="gauge-bar"><i id="humidityBar"></i></div>
+        </div>
+
+        <div class="gauge" data-key="wind">
+          <span class="gauge-label">Wind</span>
+          <span class="gauge-value mono"><span id="wind">--</span> km/h</span>
+          <div class="wind-compass"><i id="windArrow"></i></div>
+        </div>
+
+        <div class="gauge" data-key="pressure">
+          <span class="gauge-label">Pressure</span>
+          <span class="gauge-value mono"><span id="pressure">--</span> hPa</span>
+          <div class="gauge-bar"><i id="pressureBar"></i></div>
+        </div>
+
+        <div class="gauge" data-key="uv">
+          <span class="gauge-label">UV Index</span>
+          <span class="gauge-value mono"><span id="uv">--</span></span>
+          <span id="uvTag" class="gauge-tag">—</span>
+        </div>
+
+        <div class="gauge" data-key="visibility">
+          <span class="gauge-label">Visibility</span>
+          <span class="gauge-value mono"><span id="visibility">--</span> km</span>
+          <div class="gauge-bar"><i id="visibilityBar"></i></div>
+        </div>
+
+        <div class="gauge" data-key="aqi">
+          <span class="gauge-label">Air Quality</span>
+          <span class="gauge-value mono"><span id="aqi">--</span></span>
+          <span id="aqiTag" class="gauge-tag">—</span>
+        </div>
+      </section>
+
+      <!-- ============ HOURLY TIMELINE ============ -->
+      <section class="hourly-section">
+        <h2 class="section-title">Next 24 hours</h2>
+        <div id="hourlyStrip" class="hourly-strip"></div>
+      </section>
+
+      <!-- ============ 7-DAY FORECAST ============ -->
+      <section class="daily-section">
+        <h2 class="section-title">7-day outlook</h2>
+        <div id="dailyList" class="daily-list"></div>
+      </section>
+
+      <footer class="foot mono">
+        data — open-meteo.com · rendered live by ATMOS
+      </footer>
+    </main>
+
+  </div>
+
+<script src="script.js"></script>
+</body>
+</html>
